@@ -22,15 +22,24 @@ void set_rgb(Image *img, uint x, uint y, Color r, Color g, Color b)
 	pixel[0] = r;
 	pixel[1] = g;
 	pixel[2] = b;
-	pixel[3] = 100;
+}
+
+void set_rgba(Image *img, uint x, uint y, Color r, Color g, Color b, Color a)
+{
+	if (x < 0 || y < 0 || x > img->width || y > img->height) return;
+
+	png_bytep pixel = &(img->image[y][x * 4]);
+	pixel[0] = r;
+	pixel[1] = g;
+	pixel[2] = b;
+	pixel[3] = a;
 }
 
 void set_label(Image *img, uint x, uint y, Color label)
 {
 	if (x < 0 || y < 0 || x > img->width || y > img->height) return;
-	&(img->image[y][x * 4])[3] = label;
+	img->image[y][x * 4 + 3] = label;
 }
-
 
 void error(char *msg)
 {

@@ -34,11 +34,11 @@ double center_distance(Center *center, png_bytep rgb)
 	return sqrt(rdiff + gdiff + bdiff);
 }
 
-void center_add(Center *center, Color red, Color green, Color blue)
+void center_add(Center *center, png_bytep rgb)
 {
-	center->red += red;
-	center->green += green;
-	center->blue += blue;
+	center->red += rgb[0];
+	center->green += rgb[1];
+	center->blue += rgb[2];
 }
 
 void center_divide(Center *center, uint n)

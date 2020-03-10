@@ -10,12 +10,14 @@
 
 #include <png.h>
 
-Image *segment(Image *img, uint k);
+void segment(Image *img, uint k, uint max_gens);
 
-char *calculate_centers(uint *nums, Center *sums, Center *old_centers, uint k);
+char calculate_centers(uint *nums, Center *sums, Center *old_centers, uint k);
+
+void colorize(Image *img, Center *centers, uint k);
 
 Center *init(uint k);
 
-Color random(void);
+Color random_color(void);
 
 #endif

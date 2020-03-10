@@ -23,7 +23,7 @@ Center *create_center(Color red, Color green, Color blue, Color label);
 
 double center_distance(Center *center, png_bytep rgb);
 
-void center_add(Center *center, Color red, Color green, Color blue);
+void center_add(Center *center, png_bytep rgb);
 void center_divide(Center *center, uint n);
 
 Center *center_clone(Center *center);
