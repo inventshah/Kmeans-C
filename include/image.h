@@ -22,6 +22,7 @@ typedef unsigned int uint;
 
 png_bytep get_rgb(Image *img, uint x, uint y);
 void set_rgb(Image *img, uint x, uint y, Color r, Color g, Color b);
+void set_label(Image *img, uint x, uint y, Color label);
 
 void error(char *msg);
 void print_info(uint width, uint height, int color_type, int bit_depth);

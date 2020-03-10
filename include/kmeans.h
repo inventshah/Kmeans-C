@@ -12,7 +12,7 @@
 
 Image *segment(Image *img, uint k);
 
-Center *calculate_centers(uint *nums, Center *sums, Center *old_centers, uint k);
+char *calculate_centers(uint *nums, Center *sums, Center *old_centers, uint k);
 
 Center *init(uint k);
 

@@ -20,7 +20,7 @@ Center *create_center(Color red, Color green, Color blue, Color label)
 	return temp;
 }
 
-double distance(Center *center, png_bytep rgb)
+double center_distance(Center *center, png_bytep rgb)
 {
 	double rdiff, gdiff, bdiff;
 	rdiff = center->red - rgb[0];
@@ -34,26 +34,34 @@ double distance(Center *center, png_bytep rgb)
 	return sqrt(rdiff + gdiff + bdiff);
 }
 
-void add(Center *center, Color red, Color green, Color blue)
+void center_add(Center *center, Color red, Color green, Color blue)
 {
 	center->red += red;
 	center->green += green;
 	center->blue += blue;
 }
 
-void divide(Center *center, uint n)
+void center_divide(Center *center, uint n)
 {
 	center->red /= n;
 	center->green /= n;
 	center->blue /= n;
 }
 
-Center *clone(Center *center)
+Center *center_clone(Center *center)
 {
 	return create_center(center->red, center->green, center->blue, center->label);
 }
 
-char equals(Center *c, Center *d)
+void center_copy(Center *src, Center *dest)
+{
+	dest->red = src->red;
+	dest->green = src->green;
+	dest->blue = src->blue;
+	dest->label = src->label;
+}
+
+char center_equals(Center *c, Center *d)
 {
 	return (c->red == d->red && c->green == d->green && c->blue == d->blue);
 }

@@ -21,12 +21,14 @@ typedef struct center Center;
 
 Center *create_center(Color red, Color green, Color blue, Color label);
 
-double distance(Center *center, png_bytep rgb);
+double center_distance(Center *center, png_bytep rgb);
 
-void add(Center *center, Color red, Color green, Color blue);
-void divide(Center *center, uint n);
+void center_add(Center *center, Color red, Color green, Color blue);
+void center_divide(Center *center, uint n);
 
-Center *clone(Center *center);
-char equals(Center *c, Center *d);
+Center *center_clone(Center *center);
+
+void center_copy(Center *src, Center *dest);
+char center_equals(Center *c, Center *d);
 
 #endif

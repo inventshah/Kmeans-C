@@ -25,6 +25,13 @@ void set_rgb(Image *img, uint x, uint y, Color r, Color g, Color b)
 	pixel[3] = 100;
 }
 
+void set_label(Image *img, uint x, uint y, Color label)
+{
+	if (x < 0 || y < 0 || x > img->width || y > img->height) return;
+	&(img->image[y][x * 4])[3] = label;
+}
+
+
 void error(char *msg)
 {
 	fprintf(stderr, "%s\n", msg);
