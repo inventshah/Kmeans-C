@@ -14,7 +14,7 @@
 
 #define MAX_DIST 195076;
 
-void segment(Image *img, uint32_t k, uint32_t max_gens)
+void segment(Image *img, uint8_t k, uint32_t max_gens)
 {
 	char cont = 1;
 	uint32_t gen = 0, x, y, center;
@@ -78,7 +78,7 @@ void segment(Image *img, uint32_t k, uint32_t max_gens)
 	free(nums);
 }
 
-void colorize(Image *img, Center *centers, uint32_t k)
+void colorize(Image *img, Center *centers, uint8_t k)
 {
 	int x, y, label;
 	Center center;
@@ -95,7 +95,7 @@ void colorize(Image *img, Center *centers, uint32_t k)
 	}
 }
 
-uint8_t calculate_centers(uint32_t *nums, Center *sums, Center *old_centers, uint32_t k)
+uint8_t calculate_centers(uint32_t *nums, Center *sums, Center *old_centers, uint8_t k)
 {
 	int i;
 	Center *center;
@@ -123,7 +123,7 @@ uint8_t calculate_centers(uint32_t *nums, Center *sums, Center *old_centers, uin
 	return ret;
 }
 
-Center *init(uint32_t k)
+Center *init(uint8_t k)
 {
 	int i;
 	Center *center, *centers = (Center *) calloc(k, sizeof(Center));

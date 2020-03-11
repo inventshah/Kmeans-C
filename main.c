@@ -7,14 +7,24 @@
 
 #include "kmeans.h"
 #include "image.h"
+#include "utils.h"
 
-int main(void)
+int main(int argc, char **argv)
 {
-	Image *img = open_image("source.png");
+	Image *img = NULL;
+	char *source, *save;
+	uint8_t k;
+	uint32_t gens = 100;
 
-	segment(img, 3, 50);
+	if (argc < 4) error("Too few command line arguments. Need [source filename] [output filename] [K value]. Optional [Max gens]");
 
-	save_image(img, "kmean.png");
+	img = open_image(argv[1]);
+	k = atoi(argv[3]);
+
+	if (argc == 5) gens = atoi(argv[4]);
+
+	segment(img, k, gens);
+	save_image(img, argv[2]);
 
 	img = free_image(img);
 

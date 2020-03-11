@@ -6,15 +6,17 @@ Dependencies: `png.h`
 
 Clone: `git clone https://github.com/inventshah/Kmeans-C.git`
 
-Compile & Run: `./build.sh && ./bin/main`
+Compile: `./build.sh`
 
-Put a `source.png` file in the `Kmeans-C` folder. On run a `kmeans.png` file will be created with k=3 groupings.
+Run: `./bin/main [source filename] [output filename] [K-value] [max generations]`
+
+Default max generations is 100.
 
 ### Examples
 
 source | 2 | 3 | 4 | 5
 :-----:|:-:|:-:|:-:|:-:
-![source](source.png) | ![2](images/k2.png) | ![3](images/k3.png) | ![4](images/k4.png) | ![5](images/k5.png)
+![source](images/source.png) | ![2](images/k2.png) | ![3](images/k3.png) | ![4](images/k4.png) | ![5](images/k5.png)
 
 ### Built With
 * C
