@@ -12,8 +12,8 @@
 struct center
 {
 	uint red;
-	uint blue;
 	uint green;
+	uint blue;
 	Color label;
 };
 

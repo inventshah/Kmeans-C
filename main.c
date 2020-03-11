@@ -11,7 +11,7 @@ int main(void)
 {
 	Image *img = open_image("source.png");
 
-	segment(img, 3, 100);
+	segment(img, 3, 10);
 
 	save_image(img, "test.png", 1);
 

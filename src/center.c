@@ -22,7 +22,7 @@ Center *create_center(Color red, Color green, Color blue, Color label)
 
 double center_distance(Center *center, png_bytep rgb)
 {
-	double rdiff, gdiff, bdiff;
+	int rdiff, gdiff, bdiff;
 	rdiff = center->red - rgb[0];
 	gdiff = center->green - rgb[1];
 	bdiff = center->blue - rgb[2];

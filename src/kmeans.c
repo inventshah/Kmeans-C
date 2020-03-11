@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define MAX_DIST 765;
+#define MAX_DIST 195076;
 
 void segment(Image *img, uint k, uint max_gens)
 {
@@ -29,6 +29,8 @@ void segment(Image *img, uint k, uint max_gens)
 	while (cont && gen < max_gens)
 	{
 		printf("gen=%d\n", gen);
+		//for (x = 0; x < k; x++) printf("\tcenter %d: rgb(%d, %d, %d)\n", x, centers[x].red, centers[x].green, centers[x].blue);
+		
 		for (x = 0; x < img->width; x++)
 		{
 			for (y = 0; y < img->height; y++)
@@ -78,8 +80,8 @@ void colorize(Image *img, Center *centers, uint k)
 		for (y = 0; y < img->height; y++)
 		{
 			label = *(get_rgb(img, x, y) + 3);
-
 			center = centers[label];
+
 			set_rgba(img, x, y, center.red, center.green, center.blue, 255);
 		}
 	}
@@ -124,7 +126,7 @@ Center *init(uint k)
 		exit(0);
 	}
 
-	srand(time(NULL));
+	srand(1);
 
 	for (i = 0; i < k; i++)
 	{
@@ -135,7 +137,7 @@ Center *init(uint k)
 		center->label = i;
 	}
 
-	for (i = 0; i < k; i++) printf("\ninit %d: rgb(%d, %d, %d)\n", i, centers[i].red, centers[i].green, centers[i].blue);
+	for (i = 0; i < k; i++) printf("init %d: rgb(%d, %d, %d)\n", i, centers[i].red, centers[i].green, centers[i].blue);
 
 	return centers;
 }
