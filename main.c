@@ -12,9 +12,9 @@ int main(void)
 {
 	Image *img = open_image("source.png");
 
-	segment(img, 5, 50);
+	segment(img, 3, 50);
 
-	save_image(img, "test.png");
+	save_image(img, "kmean.png");
 
 	img = free_image(img);
 
