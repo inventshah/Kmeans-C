@@ -2,57 +2,62 @@
 // March 9, 2020
 
 #include "image.h"
+#include "utils.h"
 
 #include <png.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-
-png_bytep get_rgb(Image *img, uint x, uint y)
+// Get a pointer to RGB array of (x, y) pixel
+png_bytep get_rgb(Image *img, uint32_t x, uint32_t y)
 {
-	if (x < 0 || y < 0 || x > img->width || y > img->height) return NULL;
+	if (not_in_bounds(img, x, y)) return NULL;
 	return &(img->image[y][x * 4]);
 }
 
-void set_rgb(Image *img, uint x, uint y, Color r, Color g, Color b)
+// Set the RGB values of an (x, y) pixel
+void set_rgb(Image *img, uint32_t x, uint32_t y, uint8_t red, uint8_t green, uint8_t blue)
 {
-	if (x < 0 || y < 0 || x > img->width || y > img->height) return;
+	if (not_in_bounds(img, x, y)) return;
 
 	png_bytep pixel = &(img->image[y][x * 4]);
-	pixel[0] = r;
-	pixel[1] = g;
-	pixel[2] = b;
+	pixel[0] = red;
+	pixel[1] = green;
+	pixel[2] = blue;
 }
 
-void set_rgba(Image *img, uint x, uint y, Color r, Color g, Color b, Color a)
+// Set the RGBA values of an (x, y) pixel
+void set_rgba(Image *img, uint32_t x, uint32_t y, uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
 {
-	if (x < 0 || y < 0 || x > img->width || y > img->height) return;
+	if (not_in_bounds(img, x, y)) return;
 
 	png_bytep pixel = &(img->image[y][x * 4]);
-	pixel[0] = r;
-	pixel[1] = g;
-	pixel[2] = b;
-	pixel[3] = a;
+	pixel[0] = red;
+	pixel[1] = green;
+	pixel[2] = blue;
+	pixel[3] = alpha;
 }
 
-void set_label(Image *img, uint x, uint y, Color label)
+// Set the Alpha value of an (x, y) pixel, acts as label for kmeans
+void set_label(Image *img, uint32_t x, uint32_t y, uint8_t label)
 {
-	if (x < 0 || y < 0 || x > img->width || y > img->height) return;
+	if (not_in_bounds(img, x, y)) return;
 	img->image[y][x * 4 + 3] = label;
 }
 
-void error(char *msg)
-{
-	fprintf(stderr, "%s\n", msg);
-	exit(0);
-}
-
-void print_info(uint width, uint height, int color_type, int bit_depth)
+// Print image info
+void print_info(uint32_t width, uint32_t height, int uint8_t_type, int bit_depth)
 {
 	printf("\twidth:  %d\n", width);
 	printf("\theight: %d\n", height);
-	printf("\ttype:   %d\n", color_type);
+	printf("\ttype:   %d\n", uint8_t_type);
 	printf("\tdepth:  %d\n", bit_depth);
+}
+
+// Check if a point (x, y) is in the image
+int8_t not_in_bounds(Image *img, uint32_t x, uint32_t y)
+{
+	return (x < 0 || y < 0 || x > img->width || y > img->height);
 }
 
 // Open and read an image
@@ -66,18 +71,19 @@ Image *open_image(char *filename)
 	png_structp png;
 	png_byte color_type, bit_depth;
 
+	// Allocate space
 	Image *img = (Image *) malloc(sizeof(Image));
-	if (img == NULL) error("Unable to malloc Image in open_png");
+	check_null(img, "Unable to malloc Image in open_png");
 
 	printf("Opening %s...\n", filename);
 	fp = fopen(filename, "rb");
-	if (fp == NULL) error("Unable to open file");
+	check_null(fp, "Unable to open file");
 
 	png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-	if(png == NULL) error("Unable to create png struct in open_png");
+	check_null(png, "Unable to create png struct in open_png");
 
 	info = png_create_info_struct(png);
-	if(info == NULL) error("Unable to create info struct in open_png");
+	check_null(info, "Unable to create info struct in open_png");
 
 	if(setjmp(png_jmpbuf(png))) error("setjmp() returned true in open_png");
 
@@ -85,6 +91,7 @@ Image *open_image(char *filename)
 
 	png_read_info(png, info);
 
+	// Get image info
 	img->width = png_get_image_width(png, info);
 	img->height = png_get_image_height(png, info);
 
@@ -93,6 +100,7 @@ Image *open_image(char *filename)
 
 	print_info(img->width, img->height, color_type, bit_depth);
 
+	// Configure the png
 	if(bit_depth == 16) png_set_strip_16(png);
 	if(color_type == PNG_COLOR_TYPE_PALETTE) png_set_palette_to_rgb(png);
 	if(color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) png_set_expand_gray_1_2_4_to_8(png);
@@ -103,9 +111,12 @@ Image *open_image(char *filename)
 	// Allocate the image space
 	num_row_bytes = png_get_rowbytes(png, info);
 	img->image = (png_bytep *) malloc(sizeof(png_bytep) * img->height);
+	check_null(img, "Unable to malloc png_bytep for Image in open_png");
+
 	for (i = 0; i < img->height; i++)
 	{
 		img->image[i] = (png_bytep) malloc(num_row_bytes);
+		check_null(img, "Unable to malloc png_bytep for Image in open_png");
 	}
 
 	png_read_image(png, img->image);
@@ -132,7 +143,7 @@ void *free_image(Image *img)
 	return NULL;
 }
 
-void save_image(Image *img, char *filename, int alpha_channel)
+void save_image(Image *img, char *filename)
 {
 	int i;
 	FILE *fp;
@@ -144,13 +155,13 @@ void save_image(Image *img, char *filename, int alpha_channel)
 	printf("Saving file %s...\n", filename);
 
 	fp = fopen(filename, "wb");
-	if(fp == NULL) error("Unable to save file");
+	check_null(fp, "Unable to open file");
 
 	png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-	if (png == NULL) error("Unable to create png struct in save_png");
+	check_null(png, "Unable to create png struct in open_png");
 
 	info = png_create_info_struct(png);
-	if (info == NULL) error("Unable to create info struct in save_png");
+	check_null(info, "Unable to create info struct in open_png");
 
 	if (setjmp(png_jmpbuf(png))) error("setjmp() returned true in save_png");
 
@@ -169,10 +180,7 @@ void save_image(Image *img, char *filename, int alpha_channel)
 	);
 	png_write_info(png, info);
 
-	// remove alpha channel
-	if (alpha_channel == 0) png_set_filler(png, 0, PNG_FILLER_AFTER);
-
-	if (img->image == NULL) abort();
+	check_null(img->image, "Image data was null");
 
 	png_write_image(png, img->image);
 	png_write_end(png, NULL);

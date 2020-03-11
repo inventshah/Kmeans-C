@@ -8,27 +8,26 @@
 #include "image.h"
 
 #include <png.h>
+#include <stdint.h>
 
 struct center
 {
-	uint red;
-	uint green;
-	uint blue;
-	Color label;
+	uint32_t red;
+	uint32_t green;
+	uint32_t blue;
 };
 
 typedef struct center Center;
 
-Center *create_center(Color red, Color green, Color blue, Color label);
+Center *create_center(uint8_t red, uint8_t green, uint8_t blue);
 
-double center_distance(Center *center, png_bytep rgb);
+int center_distance(Center *center, png_bytep rgb);
 
 void center_add(Center *center, png_bytep rgb);
-void center_divide(Center *center, uint n);
+void center_divide(Center *center, uint32_t n);
 
-Center *center_clone(Center *center);
 
 void center_copy(Center *src, Center *dest);
-char center_equals(Center *c, Center *d);
+uint8_t center_equals(Center *c, Center *d);
 
 #endif

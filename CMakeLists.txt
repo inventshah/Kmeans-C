@@ -21,6 +21,7 @@ add_library(${PROJECT_NAME} SHARED
 	${PROJECT_SOURCE_DIR}/src/image.c
 	${PROJECT_SOURCE_DIR}/src/center.c
 	${PROJECT_SOURCE_DIR}/src/kmeans.c
+	${PROJECT_SOURCE_DIR}/src/utils.c
 )
 
 target_link_libraries(${PROJECT_NAME} PNG::PNG)

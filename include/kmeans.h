@@ -9,15 +9,16 @@
 #include "image.h"
 
 #include <png.h>
+#include <stdint.h>
 
-void segment(Image *img, uint k, uint max_gens);
+void segment(Image *img, uint32_t k, uint32_t max_gens);
 
-char calculate_centers(uint *nums, Center *sums, Center *old_centers, uint k);
+uint8_t calculate_centers(uint32_t *nums, Center *sums, Center *old_centers, uint32_t k);
 
-void colorize(Image *img, Center *centers, uint k);
+void colorize(Image *img, Center *centers, uint32_t k);
 
-Center *init(uint k);
+Center *init(uint32_t k);
 
-Color random_color(void);
+uint8_t random_color(void);
 
 #endif

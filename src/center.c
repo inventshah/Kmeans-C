@@ -3,24 +3,28 @@
 
 #include "center.h"
 #include "image.h"
+#include "utils.h"
 
 #include <math.h>
 #include <png.h>
+#include <stdint.h>
 #include <stdlib.h>
 
-
-Center *create_center(Color red, Color green, Color blue, Color label)
+// Create a new ceneter with RGB inital values
+Center *create_center(uint8_t red, uint8_t green, uint8_t blue)
 {
-	Center *temp = (Center *) malloc(sizeof(Color));
+	Center *temp = (Center *) malloc(sizeof(uint8_t));
+	check_null(temp, "malloc failed to find space for Center");
+
 	temp->red = red;
 	temp->green = green;
 	temp->blue = blue;
-	temp->label = label;
 
 	return temp;
 }
 
-double center_distance(Center *center, png_bytep rgb)
+// Calculate squared Euclidean distance between a center and a pixel
+int center_distance(Center *center, png_bytep rgb)
 {
 	int rdiff, gdiff, bdiff;
 	rdiff = center->red - rgb[0];
@@ -31,9 +35,10 @@ double center_distance(Center *center, png_bytep rgb)
 	gdiff *= gdiff;
 	bdiff *= bdiff;
 
-	return sqrt(rdiff + gdiff + bdiff);
+	return rdiff + gdiff + bdiff;
 }
 
+// Add RGB to a center's RGB
 void center_add(Center *center, png_bytep rgb)
 {
 	center->red += rgb[0];
@@ -41,27 +46,24 @@ void center_add(Center *center, png_bytep rgb)
 	center->blue += rgb[2];
 }
 
-void center_divide(Center *center, uint n)
+// Divide the center RGB by a umber
+void center_divide(Center *center, uint32_t n)
 {
 	center->red /= n;
 	center->green /= n;
 	center->blue /= n;
 }
 
-Center *center_clone(Center *center)
-{
-	return create_center(center->red, center->green, center->blue, center->label);
-}
-
+// Copy Center struct from src to dest
 void center_copy(Center *src, Center *dest)
 {
 	dest->red = src->red;
 	dest->green = src->green;
 	dest->blue = src->blue;
-	dest->label = src->label;
 }
 
-char center_equals(Center *c, Center *d)
+// Check if the RGB of two centers are equal
+uint8_t center_equals(Center *c, Center *d)
 {
 	return (c->red == d->red && c->green == d->green && c->blue == d->blue);
 }

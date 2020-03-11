@@ -5,6 +5,7 @@
 
 #include "center.h"
 #include "image.h"
+#include "utils.h"
 
 #include <png.h>
 #include <stdio.h>
@@ -13,23 +14,25 @@
 
 #define MAX_DIST 195076;
 
-void segment(Image *img, uint k, uint max_gens)
+void segment(Image *img, uint32_t k, uint32_t max_gens)
 {
 	char cont = 1;
-	uint gen = 0, x, y, center;
+	uint32_t gen = 0, x, y, center;
 	Center *centers = init(k);
 
 	Center *sums = (Center *) calloc(k, sizeof(Center));
-	uint *nums = (uint *) calloc(k, sizeof(uint));
+	check_null(sums, "calloc failed to find space for sums in segment");
 
-	double current_dist, min_dist = MAX_DIST;
+	uint32_t *nums = (uint32_t *) calloc(k, sizeof(uint32_t));
+	check_null(nums, "calloc failed to find space for nums in segment");
 
-	Color closest_label = 0;
+	uint32_t current_dist, min_dist = MAX_DIST;
+
+	uint8_t closest_label = 0;
 
 	while (cont && gen < max_gens)
 	{
-		printf("gen=%d\n", gen);
-		//for (x = 0; x < k; x++) printf("\tcenter %d: rgb(%d, %d, %d)\n", x, centers[x].red, centers[x].green, centers[x].blue);
+		printf("gen %d\n", gen);
 		
 		for (x = 0; x < img->width; x++)
 		{
@@ -57,9 +60,14 @@ void segment(Image *img, uint k, uint max_gens)
 		cont = calculate_centers(nums, sums, centers, k);
 
 		free(sums);
-		free(nums);
+		
 		sums = (Center *) calloc(k, sizeof(Center));
-		nums = (uint *) calloc(k, sizeof(uint));
+		check_null(sums, "calloc failed to find space for sums in segment");
+
+		free(nums);
+		nums = (uint32_t *) calloc(k, sizeof(uint32_t));
+		check_null(nums, "calloc failed to find space for nums in segment");
+
 		gen++;
 	}
 
@@ -70,7 +78,7 @@ void segment(Image *img, uint k, uint max_gens)
 	free(nums);
 }
 
-void colorize(Image *img, Center *centers, uint k)
+void colorize(Image *img, Center *centers, uint32_t k)
 {
 	int x, y, label;
 	Center center;
@@ -87,7 +95,7 @@ void colorize(Image *img, Center *centers, uint k)
 	}
 }
 
-char calculate_centers(uint *nums, Center *sums, Center *old_centers, uint k)
+uint8_t calculate_centers(uint32_t *nums, Center *sums, Center *old_centers, uint32_t k)
 {
 	int i;
 	Center *center;
@@ -115,18 +123,13 @@ char calculate_centers(uint *nums, Center *sums, Center *old_centers, uint k)
 	return ret;
 }
 
-Center *init(uint k)
+Center *init(uint32_t k)
 {
 	int i;
 	Center *center, *centers = (Center *) calloc(k, sizeof(Center));
+	check_null(centers, "calloc failed to find space for centers in init");
 
-	if (centers == NULL)
-	{
-		fprintf(stderr, "Unable to init centers");
-		exit(0);
-	}
-
-	srand(1);
+	srand(time(NULL));
 
 	for (i = 0; i < k; i++)
 	{
@@ -134,15 +137,14 @@ Center *init(uint k)
 		center->red = random_color();
 		center->green = random_color();
 		center->blue = random_color();
-		center->label = i;
 	}
 
-	for (i = 0; i < k; i++) printf("init %d: rgb(%d, %d, %d)\n", i, centers[i].red, centers[i].green, centers[i].blue);
+	for (i = 0; i < k; i++) printf("initial center %d: rgb(%d, %d, %d)\n", i, centers[i].red, centers[i].green, centers[i].blue);
 
 	return centers;
 }
 
-Color random_color(void)
+uint8_t random_color(void)
 {
 	return rand() % 256;
 }
