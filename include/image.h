@@ -26,6 +26,9 @@ void print_info(uint32_t width, uint32_t height, int uint8_t_type, int bit_depth
 
 int8_t not_in_bounds(Image *img, uint32_t x, uint32_t y);
 
+uint8_t gamma_correct(uint32_t num);
+uint8_t gamma_reset(uint32_t num);
+
 Image *open_image(char *filename);
 void save_image(Image *img, char *filename);
 

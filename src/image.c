@@ -7,6 +7,8 @@
 #include <png.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <math.h>
 
 // Get a pointer to RGB array of (x, y) pixel
 png_bytep get_rgb(Image *img, uint32_t x, uint32_t y)
@@ -58,6 +60,17 @@ void print_info(uint32_t width, uint32_t height, int uint8_t_type, int bit_depth
 int8_t not_in_bounds(Image *img, uint32_t x, uint32_t y)
 {
 	return (x < 0 || y < 0 || x > img->width || y > img->height);
+}
+
+// Gamma correction and normalization
+uint8_t gamma_correct(uint32_t num)
+{
+	return (num * num) >> 8;
+}
+
+uint8_t gamma_reset(uint32_t num)
+{
+	return sqrt(num << 8);
 }
 
 // Open and read an image

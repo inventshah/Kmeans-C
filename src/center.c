@@ -27,9 +27,9 @@ Center *create_center(uint8_t red, uint8_t green, uint8_t blue)
 int center_distance(Center *center, png_bytep rgb)
 {
 	int rdiff, gdiff, bdiff;
-	rdiff = center->red - rgb[0];
-	gdiff = center->green - rgb[1];
-	bdiff = center->blue - rgb[2];
+	rdiff = gamma_correct(center->red) - gamma_correct(rgb[0]);
+	gdiff = gamma_correct(center->green) - gamma_correct(rgb[1]);
+	bdiff = gamma_correct(center->blue) - gamma_correct(rgb[2]);
 
 	rdiff *= rdiff;
 	gdiff *= gdiff;
